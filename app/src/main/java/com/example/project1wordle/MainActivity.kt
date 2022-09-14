@@ -1,15 +1,86 @@
 package com.example.project1wordle
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var guesserBtn: Button // guess or enter button
+    lateinit var reset: Button      // reset button
+    lateinit var userGuesser: EditText // user input
+    lateinit var show1: TextView //copies user input to text
+    lateinit var show2: TextView
+    lateinit var show3: TextView
+    lateinit var check1: TextView // checks if any of the letters are correct
+    lateinit var check2: TextView
+    lateinit var check3: TextView
+    lateinit var reveal: TextView
 
-    var wordToGuess = FourLetterWordList.getRandomFourLetterWord()
+    var counter = 0 // counter
+    var userIn = "" // stores user input
+    var wordToGuess = FourLetterWordList.getRandomFourLetterWord() // random words
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        userGuesser = findViewById(R.id.userGuess)
+        guesserBtn = findViewById(R.id.guessBtn)
+        show1 = findViewById(R.id.userShow1)
+        show2 = findViewById(R.id.userShow2)
+        show3 = findViewById(R.id.userShow3)
+        check1 = findViewById(R.id.userCheck1)
+        check2 = findViewById(R.id.userCheck2)
+        check3 = findViewById(R.id.userCheck3)
+        reveal = findViewById(R.id.reveal)
+        reset = findViewById(R.id.resetBtn)
+
+        guesserBtn.setOnClickListener {
+            counter++
+            if (counter == 1) {
+                userIn = userGuesser.text.toString()
+                show1.text = userIn
+                check1.text = checkGuess(userIn)
+                userGuesser.text.clear()
+            }
+            else if (counter == 2) {
+                userIn = userGuesser.text.toString()
+                show2.text = userIn
+                check2.text = checkGuess(userIn)
+                userGuesser.text.clear()
+            }
+
+            else{
+                userIn = userGuesser.text.toString()
+                show3.text = userIn
+                check3.text = checkGuess(userIn)
+                Toast.makeText(this,"You have reachced the limit! "
+                    ,Toast.LENGTH_LONG).show()
+                reveal.text = wordToGuess
+                guesserBtn.isEnabled = false
+                userGuesser.text.clear()
+            }
+            reset.setOnClickListener {
+                wordToGuess = FourLetterWordList.getRandomFourLetterWord()
+                userGuesser.text.clear()
+                counter = 0
+                userIn = ""
+                show1.text = ""
+                check1.text = ""
+                show2.text = ""
+                check2.text = ""
+                show3.text = ""
+                check3.text = ""
+                reveal.text = ""
+                guesserBtn.isEnabled = true
+            }
+
+        }
 
     }
 
@@ -40,7 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
+// gets the random word
 object FourLetterWordList {
     // List of most common 4 letter words from: https://7esl.com/4-letter-words/
     val fourLetterWords =
